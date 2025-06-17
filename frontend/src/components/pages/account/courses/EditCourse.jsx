@@ -7,6 +7,7 @@ import { apiUrl, token } from "../../../common/Config";
 import toast from "react-hot-toast";
 import ManageOutcome from "./ManageOutcome";
 import ManageRequirement from "./ManageRequirement";
+import EditCover from "./EditCover";
 
 const EditCourse = () => {
   const params = useParams();
@@ -310,6 +311,7 @@ const EditCourse = () => {
                 <div className="col-md-5">
                  <ManageOutcome/>
                  <ManageRequirement/>
+                 <EditCover/>
                 </div>
 
               </div>
