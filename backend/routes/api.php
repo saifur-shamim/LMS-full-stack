@@ -25,6 +25,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/outcomes', [OutcomeController::class, 'store']);
     Route::put('/outcomes/{id}', [OutcomeController::class, 'update']);
     Route::delete('/outcomes/{id}', [OutcomeController::class, 'destroy']);
+    Route::post('/sort-outcomes', [OutcomeController::class, 'sortOutcomes']);
 
     //Requirement routes 
     Route::get('/requirements', [RequirementController::class, 'index']);

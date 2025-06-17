@@ -4,26 +4,21 @@ import { useForm } from "react-hook-form";
 import { apiUrl, token } from "../../../common/Config";
 import toast from "react-hot-toast";
 
-const UpdateOutcome = ({
-  outcomeData,
-  showOutcome,
-  handleClose,
-  outcomes,
-  setOutcomes,
-}) => {
-  const [loading, setLoading] = useState(false);
+const UpdateRequirement = ({showRequirement,requirements, setRequirements, requirementData,handleClose}) => {
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    reset,
-  } = useForm();
+    const [loading, setLoading] = useState(false);
+    
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+        reset,
+    } = useForm();
 
-  const onSubmit = async (data) => {
+    const onSubmit = async (data) => {
     setLoading(true);
 
-    await fetch(`${apiUrl}/outcomes/${outcomeData.id}`, {
+    await fetch(`${apiUrl}/requirements/${requirementData.id}`, {
       method: "PUT",
       headers: {
         "Content-type": "application/json",
@@ -38,10 +33,10 @@ const UpdateOutcome = ({
         if (result.status == 200) {
         //   const newOutcomes = [...outcomes, result.data];
         //   setOutcomes(newOutcomes);
-        const updatedOutcomes =outcomes.map(outcome => outcome.id == result.data.id
-          ? {...outcome, text:result.data.text} : outcome )
+        const updatedRequirements =requirements.map(requirement => requirement.id == result.data.id
+          ? {...requirement, text:result.data.text} : requirement )
 
-          setOutcomes(updatedOutcomes);
+         setRequirements(updatedRequirements);
           toast.success(result.message);
         } else {
           console.log("Something went wrong");
@@ -50,39 +45,37 @@ const UpdateOutcome = ({
   };
 
  useEffect(() => {
-    if (outcomeData) {
+    if (requirementData) {
         reset({
-            outcome: outcomeData.text
+            requirement: requirementData.text
         });
     }
-}, [outcomeData, reset]);
-
-//reset is needed or not? 
+}, [requirementData, reset]);
 
   return (
     <>
-      <Modal size="lg" show={showOutcome} onHide={handleClose}>
+      <Modal size="lg" show={showRequirement} onHide={handleClose}>
         <form action="" onSubmit={handleSubmit(onSubmit)}>
           <Modal.Header closeButton>
-            <Modal.Title>Update Outcome</Modal.Title>
+            <Modal.Title>Update Requirement</Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <div className="mb-3">
               <label htmlFor="" className="form-label">
-               Outcome
+               Requirement
               </label>
               <input 
               {
-                ...register('outcome', {
-                    required: "The outcome field is required."
+                ...register('requirement', {
+                    required: "The requirement field is required."
                 })
               }
               type="text" 
             className={`form-control ${errors.title && "is-invalid"}`}
-              placeholder="Outcome" 
+              placeholder="Requirement" 
               />
-                {errors.outcome && (
-                <p className="invalid-feedback">{errors.outcome.message}</p>
+                {errors.requirement && (
+                <p className="invalid-feedback">{errors.requirement.message}</p>
               )}
             </div>
           </Modal.Body>
@@ -94,7 +87,7 @@ const UpdateOutcome = ({
         </form>
       </Modal>
     </>
-  );
-};
+  )
+}
 
-export default UpdateOutcome;
+export default UpdateRequirement

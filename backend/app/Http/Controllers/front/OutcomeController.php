@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\front;
 
 use App\Http\Controllers\Controller;
@@ -10,19 +11,21 @@ class OutcomeController extends Controller
 {
     public function index(Request $request)
     {
-        $outcomes = Outcome::where('course_id', $request->course_id)->get();
+        $outcomes = Outcome::where('course_id', $request->course_id)
+        ->orderBy('sort_order')
+        ->get();
         return response()->json([
             'status' => 200,
             'data'   => $outcomes,
         ], 200);
     }
 
-/* This method will store/save a outcome */
+    /* This method will store/save a outcome */
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'outcome' => 'required',
-            'course_id'=> 'required'
+            'course_id' => 'required'
         ]);
 
         if ($validator->fails()) {
@@ -40,7 +43,7 @@ class OutcomeController extends Controller
 
         return response()->json([
             'status'  => 200,
-            'data' =>$outcome,
+            'data' => $outcome,
             'message' => 'Outcome added successfully.',
         ], 200);
     }
@@ -72,7 +75,7 @@ class OutcomeController extends Controller
 
         return response()->json([
             'status'  => 200,
-            'data' =>$outcome,
+            'data' => $outcome,
             'message' => 'Outcome updated successfully.',
         ], 200);
     }
@@ -90,9 +93,23 @@ class OutcomeController extends Controller
 
         $outcome->delete();
 
-         return response()->json([
+        return response()->json([
             'status'  => 200,
             'message' => 'Outcome deleted successfully.',
+        ], 200);
+    }
+
+    public function sortOutcomes(Request $request)
+    {
+        if (!empty($request->outcomes)) {
+            foreach ($request->outcomes as $key => $outcome) {
+                Outcome::where('id', $outcome['id'])->update(['sort_order'=> $key]);
+            }
+        }
+
+        return response()->json([
+            'status' => 200,
+            'message' => 'Order saved(successfully.'
         ], 200);
     }
 }
