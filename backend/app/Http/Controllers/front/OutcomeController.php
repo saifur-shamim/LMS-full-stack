@@ -109,7 +109,7 @@ class OutcomeController extends Controller
 
         return response()->json([
             'status' => 200,
-            'message' => 'Order saved(successfully.'
+            'message' => 'Order updated successfully.'
         ], 200);
     }
 }
