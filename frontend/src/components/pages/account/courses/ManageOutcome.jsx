@@ -159,6 +159,7 @@ const ManageOutcome = () => {
               {loading == false ? "Save" : "Please wait..."}
             </button>
           </form>
+          
           <DragDropContext onDragEnd={handleDragEnd}>
             <Droppable droppableId="list">
               {(provided) => (
