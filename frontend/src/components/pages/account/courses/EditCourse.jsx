@@ -12,6 +12,7 @@ import EditCover from "./EditCover";
 const EditCourse = () => {
   const params = useParams();
   const [loading, setLoading] = useState(false);
+  const [course, setCourse] = useState([]);
 
   const {
     register,
@@ -41,6 +42,7 @@ const EditCourse = () => {
               sell_price: result.data.price,
               cross_price: result.data.cross_price,
             });
+            setCourse(result.data);
           } else {
             console.log("Something went wrong");
           }
