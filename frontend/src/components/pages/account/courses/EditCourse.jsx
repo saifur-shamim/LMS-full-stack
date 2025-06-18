@@ -313,7 +313,10 @@ const EditCourse = () => {
                 <div className="col-md-5">
                  <ManageOutcome/>
                  <ManageRequirement/>
-                 <EditCover/>
+                 <EditCover
+                 course = {course}
+                 setCourse = {setCourse}
+                 />
                 </div>
 
               </div>

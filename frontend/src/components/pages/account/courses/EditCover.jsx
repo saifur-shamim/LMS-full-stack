@@ -5,16 +5,16 @@ import FilePondPluginImageExifOrientation from "filepond-plugin-image-exif-orien
 import FilePondPluginImagePreview from "filepond-plugin-image-preview";
 import FilePondPluginFileValidateType from "filepond-plugin-file-validate-type";
 import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css";
-import { apiUrl } from "../../../common/Config";
+import { apiUrl, token } from "../../../common/Config";
+import toast from "react-hot-toast";
 registerPlugin(
   FilePondPluginImageExifOrientation,
   FilePondPluginImagePreview,
   FilePondPluginFileValidateType
 );
 
-const EditCover = () => {
-
-  const [files, setFiles]=useState([]);
+const EditCover = ({ course, setCourse }) => {
+  const [files, setFiles] = useState([]);
 
   return (
     <>
@@ -23,6 +23,7 @@ const EditCover = () => {
           <div className="d-flex">
             <h4 className="h5 mb-3"> Edit Cover </h4>
           </div>
+          
           <FilePond
             acceptedFileTypes={["image/jpeg", "image/jpg", "image/png"]}
             credits={false}
@@ -42,7 +43,7 @@ const EditCover = () => {
                   toast.success(response.message);
                   const updateCourseData = {
                     ...course,
-                    cover_image_small: response.data.cover_image_small,
+                    course_small_image: response.data.course_small_image,
                   };
                   setCourse(updateCourseData);
                   setFiles([]);
@@ -55,9 +56,18 @@ const EditCover = () => {
             name="image"
             labelIdle='Drag & Drop your files or <span class="filepond--label-action">Browse</span>'
           />
+
+          {course.course_small_image && (
+            <img
+              src={course.course_small_image}
+              className="w-100 rounded"
+              alt=""
+            />
+          )}
         </div>
       </div>
     </>
+
   );
 };
 
