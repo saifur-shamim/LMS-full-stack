@@ -162,7 +162,7 @@ class CourseController extends Controller
 
         // crop the best fitting 5:3 (600X360) ratio
         $img->cover(750, 450);
-        $img->save(public_path('uploads/course/small' . $imageName));
+        $img->save(public_path('uploads/course/small/' . $imageName));
 
         $course->image = $imageName;
         $course->save();
