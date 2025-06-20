@@ -4,6 +4,8 @@ import { apiUrl, token } from "../../../common/Config";
 import toast from "react-hot-toast";
 import Accordion from "react-bootstrap/Accordion";
 import UpdateChapter from "./UpdateChapter";
+import CreateLesson from "./CreateLesson";
+import { Link } from "react-router-dom";
 
 const ManageChapter = ({ course, params }) => {
   const [loading, setLoading] = useState(false);
@@ -15,11 +17,19 @@ const ManageChapter = ({ course, params }) => {
     reset,
   } = useForm();
 
+  // Update Chapter Modal
   const [showChapter, setShowChapter] = useState(false);
   const handleClose = () => setShowChapter(false);
   const handleShow = (chapter) => {
     setShowChapter(true);
     setChapterData(chapter);
+  };
+
+  // Create Lesson Modal
+  const [showLessonModal, setShowLessonModal] = useState(false);
+  const handleCloseLessonModal = () => setShowLessonModal(false);
+  const handleShowLessonModal = () => {
+    setShowLessonModal(true);
   };
 
   const chapterReducer = (state, action) => {
@@ -106,7 +116,10 @@ const ManageChapter = ({ course, params }) => {
       <div className="card shadow-lg border-0">
         <div className="card-body p-4">
           <div className="d-flex">
-            <h4 className="h5 mb-3">Chapters</h4>
+            <div className="d-flex justify-content-between w-100">
+              <h4 className="h5 mb-3">Chapters</h4>
+              <Link onClick={() => handleShowLessonModal()}>Add Lesson</Link>
+            </div>
           </div>
           <form className="mb-3" onSubmit={handleSubmit(onSubmit)}>
             <div className="mb-3">
@@ -134,9 +147,10 @@ const ManageChapter = ({ course, params }) => {
                   <Accordion.Header>{chapter.title}</Accordion.Header>
                   <Accordion.Body>
                     <div className="d-flex">
-                      <button 
-                      onClick={()=>deleteChapter(chapter.id)}
-                      className="btn btn-danger btn-sm">
+                      <button
+                        onClick={() => deleteChapter(chapter.id)}
+                        className="btn btn-danger btn-sm"
+                      >
                         Delete Chapter
                       </button>
                       <button
@@ -159,6 +173,11 @@ const ManageChapter = ({ course, params }) => {
         showChapter={showChapter}
         handleClose={handleClose}
         setChapters={setChapters}
+      />
+      <CreateLesson
+        showLessonModal={showLessonModal}
+        handleCloseLessonModal={handleCloseLessonModal}
+        course={course}
       />
     </>
   );
