@@ -78,7 +78,7 @@ const UpdateOutcome = ({
                 })
               }
               type="text" 
-            className={`form-control ${errors.title && "is-invalid"}`}
+            className={`form-control ${errors.outcome && "is-invalid"}`}
               placeholder="Outcome" 
               />
                 {errors.outcome && (

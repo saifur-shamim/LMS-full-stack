@@ -4,21 +4,20 @@ import { useForm } from "react-hook-form";
 import { apiUrl, token } from "../../../common/Config";
 import toast from "react-hot-toast";
 
-const UpdateRequirement = ({showRequirement,requirements, setRequirements, requirementData,handleClose}) => {
+const UpdateChapter = ({chapterData, showChapter,handleClose, setChapters}) => {
 
-    const [loading, setLoading] = useState(false);
-    
-    const {
-        register,
-        handleSubmit,
-        formState: { errors },
-        reset,
-    } = useForm();
+ const [loading, setLoading] = useState(false);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm();
 
-    const onSubmit = async (data) => {
+  const onSubmit = async (data) => {
     setLoading(true);
 
-    await fetch(`${apiUrl}/requirements/${requirementData.id}`, {
+    await fetch(`${apiUrl}/chapters/${chapterData.id}`, {
       method: "PUT",
       headers: {
         "Content-type": "application/json",
@@ -31,12 +30,7 @@ const UpdateRequirement = ({showRequirement,requirements, setRequirements, requi
       .then((result) => {
         setLoading(false);
         if (result.status == 200) {
-        //   const newOutcomes = [...outcomes, result.data];
-        //   setOutcomes(newOutcomes);
-        const updatedRequirements =requirements.map(requirement => requirement.id == result.data.id
-          ? {...requirement, text:result.data.text} : requirement )
-
-         setRequirements(updatedRequirements);
+      setChapters({ type: "UPDATE_CHAPTER", payload: result.data });
           toast.success(result.message);
         } else {
           console.log("Something went wrong");
@@ -44,38 +38,40 @@ const UpdateRequirement = ({showRequirement,requirements, setRequirements, requi
       });
   };
 
- useEffect(() => {
-    if (requirementData) {
-        reset({
-            requirement: requirementData.text
-        });
+
+  useEffect(()=>{
+    if(chapterData){
+      reset({
+        chapter:chapterData.title
+      })
     }
-}, [requirementData, reset]);
+
+  },[chapterData])
 
   return (
-    <>
-      <Modal size="lg" show={showRequirement} onHide={handleClose}>
+   <> 
+   <Modal size="lg" show={showChapter} onHide={handleClose}>
         <form action="" onSubmit={handleSubmit(onSubmit)}>
           <Modal.Header closeButton>
-            <Modal.Title>Update Requirement</Modal.Title>
+            <Modal.Title>Update Chapter</Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <div className="mb-3">
               <label htmlFor="" className="form-label">
-               Requirement
+               Chapter
               </label>
               <input 
               {
-                ...register('requirement', {
-                    required: "The requirement field is required."
+                ...register('chapter', {
+                    required: "The chapter field is required."
                 })
               }
               type="text" 
-            className={`form-control ${errors.requirement && "is-invalid"}`}
-              placeholder="Requirement" 
+            className={`form-control ${errors.chapter && "is-invalid"}`}
+              placeholder="Chapter" 
               />
-                {errors.requirement && (
-                <p className="invalid-feedback">{errors.requirement.message}</p>
+                {errors.chapter && (
+                <p className="invalid-feedback">{errors.chapter.message}</p>
               )}
             </div>
           </Modal.Body>
@@ -86,8 +82,8 @@ const UpdateRequirement = ({showRequirement,requirements, setRequirements, requi
           </Modal.Footer>
         </form>
       </Modal>
-    </>
+   </>
   )
 }
 
-export default UpdateRequirement
+export default UpdateChapter

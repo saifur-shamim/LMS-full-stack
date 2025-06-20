@@ -3,6 +3,7 @@
 use App\Http\Controllers\front\AccountController;
 use App\Http\Controllers\front\ChapterController;
 use App\Http\Controllers\front\CourseController;
+use App\Http\Controllers\front\LessonController;
 use App\Http\Controllers\front\OutcomeController;
 use App\Http\Controllers\front\RequirementController;
 use Illuminate\Http\Request;
@@ -22,24 +23,29 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::put('/courses/{id}', [CourseController::class, 'update']);
     Route::post('/save-course-image/{id}', [CourseController::class, 'saveCourseImage']);
 
-    //Outcome routes 
+    //Outcome routes
     Route::get('/outcomes', [OutcomeController::class, 'index']);
     Route::post('/outcomes', [OutcomeController::class, 'store']);
     Route::put('/outcomes/{id}', [OutcomeController::class, 'update']);
     Route::delete('/outcomes/{id}', [OutcomeController::class, 'destroy']);
     Route::post('/sort-outcomes', [OutcomeController::class, 'sortOutcomes']);
 
-    //Requirement routes 
+    //Requirement routes
     Route::get('/requirements', [RequirementController::class, 'index']);
     Route::post('/requirements', [RequirementController::class, 'store']);
     Route::put('/requirements/{id}', [RequirementController::class, 'update']);
     Route::delete('/requirements/{id}', [RequirementController::class, 'destroy']);
     Route::post('/sort-requirements', [RequirementController::class, 'sortRequirements']);
 
-    //Chapter routes 
+    //Chapter routes
     Route::get('/chapters', [ChapterController::class, 'index']);
     Route::post('/chapters', [ChapterController::class, 'store']);
     Route::put('/chapters/{id}', [ChapterController::class, 'update']);
     Route::delete('/chapters/{id}', [ChapterController::class, 'destroy']);
     Route::post('/sort-chapters', [ChapterController::class, 'sortChapters']);
+
+    //Lesson Routes
+    Route::post('/lessons', [LessonController::class, 'store']);
+    Route::put('/lessons/{id}', [LessonController::class, 'update']);
+    Route::delete('/lessons/{id}', [LessonController::class, 'destroy']);
 });
