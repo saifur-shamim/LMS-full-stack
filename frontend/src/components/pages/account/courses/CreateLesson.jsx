@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { apiUrl, token } from "../../../common/Config";
 import toast from "react-hot-toast";
 
-const CreateLesson = ({ showLessonModal,handleCloseLessonModal,course}) => {
+const CreateLesson = ({ showLessonModal, handleCloseLessonModal, course }) => {
   const [loading, setLoading] = useState(false);
   const {
     register,
@@ -16,8 +16,8 @@ const CreateLesson = ({ showLessonModal,handleCloseLessonModal,course}) => {
   const onSubmit = async (data) => {
     setLoading(true);
 
-    await fetch(`${apiUrl}/chapters/${chapterData.id}`, {
-      method: "PUT",
+    await fetch(`${apiUrl}/lessons`, {
+      method: "POST",
       headers: {
         "Content-type": "application/json",
         Accept: "application/json",
@@ -29,38 +29,79 @@ const CreateLesson = ({ showLessonModal,handleCloseLessonModal,course}) => {
       .then((result) => {
         setLoading(false);
         if (result.status == 200) {
-      setChapters({ type: "UPDATE_CHAPTER", payload: result.data });
+         // setChapters({ type: "UPDATE_CHAPTER", payload: result.data });
           toast.success(result.message);
+          reset({
+            chapter:'',
+            lesson:'',
+            status:1
+          });
+          handleCloseLessonModal();
         } else {
           console.log("Something went wrong");
         }
       });
   };
 
-
-    return (
+  return (
     <>
       <Modal size="lg" show={showLessonModal} onHide={handleCloseLessonModal}>
         <form action="" onSubmit={handleSubmit(onSubmit)}>
           <Modal.Header closeButton>
-            <Modal.Title>Update Chapter</Modal.Title>
+            <Modal.Title>Create Lesson</Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <div className="mb-3">
               <label htmlFor="" className="form-label">
                 Chapter
               </label>
-              <input
+              <select
                 {...register("chapter", {
-                  required: "The chapter field is required.",
+                  required: "Please Select a chapter",
                 })}
-                type="text"
-                className={`form-control ${errors.chapter && "is-invalid"}`}
-                placeholder="Chapter"
-              />
+                className={`form-select ${errors.chapter && "is-invalid"}`}
+              >
+                <option value="">Select a Chapter</option>
+                {course?.chapters?.map((chapter) => {
+                  return <option value={chapter.id}>{chapter.title}</option>;
+                })}
+              </select>
               {errors.chapter && (
                 <p className="invalid-feedback">{errors.chapter.message}</p>
               )}
+            </div>
+            <div className="mb-3">
+              <label htmlFor="" className="form-label">
+                Lesson
+              </label>
+              <input
+                {...register("lesson", {
+                  required: "The Lesson field is required.",
+                })}
+                type="text"
+                className={`form-control ${errors.lesson && "is-invalid"}`}
+                placeholder="Lesson"
+              />
+              {errors.lesson && (
+                <p className="invalid-feedback">{errors.lesson.message}</p>
+              )}
+            </div>
+
+            <div className="mb-3">
+              <label htmlFor="" className="form-label">
+                Status
+              </label>
+              <select
+                {...register("status", {
+                  required: "The Status field is required.",
+                })}
+                className="form-select"
+              >
+                <option value="1" selected>
+                  Active
+                </option>
+                <option value="0">Block</option>
+              </select>
             </div>
           </Modal.Body>
           <Modal.Footer>

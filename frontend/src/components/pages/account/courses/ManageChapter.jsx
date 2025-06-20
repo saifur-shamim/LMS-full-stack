@@ -6,6 +6,7 @@ import Accordion from "react-bootstrap/Accordion";
 import UpdateChapter from "./UpdateChapter";
 import CreateLesson from "./CreateLesson";
 import { Link } from "react-router-dom";
+import { FaPlus } from "react-icons/fa";
 
 const ManageChapter = ({ course, params }) => {
   const [loading, setLoading] = useState(false);
@@ -118,7 +119,7 @@ const ManageChapter = ({ course, params }) => {
           <div className="d-flex">
             <div className="d-flex justify-content-between w-100">
               <h4 className="h5 mb-3">Chapters</h4>
-              <Link onClick={() => handleShowLessonModal()}>Add Lesson</Link>
+              <Link onClick={() => handleShowLessonModal()}> <FaPlus/><strong>Add Lesson</strong></Link>
             </div>
           </div>
           <form className="mb-3" onSubmit={handleSubmit(onSubmit)}>
