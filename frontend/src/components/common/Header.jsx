@@ -24,9 +24,12 @@ const Header = () => {
                             </div>
                         </Form> */}
             </Nav>
-            <a href="/account/my-learning" className="btn btn-primary">
+             <a href="/account/login" className="btn btn-primary">
               My Account
             </a>
+            {/* <a href="/account/my-learning" className="btn btn-primary">
+              My Account
+            </a> */}
           </Navbar.Collapse>
         </Container>
       </Navbar>
