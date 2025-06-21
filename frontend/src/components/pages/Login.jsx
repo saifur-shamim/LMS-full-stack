@@ -18,8 +18,6 @@ const Login = () => {
   } = useForm();
 
   const onSubmit = async (data) => {
-    //console.log(data);
-
     await fetch(`${apiUrl}/login`, {
       method: "POST",
       headers: {

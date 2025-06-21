@@ -7,8 +7,8 @@ export const AuthProvider = ({children}) => {
     const userInfo = localStorage.getItem('userInfoLms'); 
     const [user, setUser] = useState(userInfo);
 
-    const login = (user) => {
-        setUser(user); 
+    const login = (userInf) => {
+        setUser(userInf); 
     }
 
     const logout = ()=> {
