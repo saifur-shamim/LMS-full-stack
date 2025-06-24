@@ -168,19 +168,31 @@ const ManageChapter = ({ course, params }) => {
                               <div className="row">
                                 <div className="col-md-7">{lesson.title}</div>
                                 <div className="col-md-5 text-end">
-                                  <small className="fw-bold text-muted me-2">
-                                    20 Mins
-                                  </small>
-                                  <span className="badge bg-success">Preview</span>
-                                  <Link className="ms-2">  <BsPencilSquare/> </Link>
-                                  <Link className="ms-2 text-danger"> <FaTrashAlt/> </Link>
-                                  
+                                  {lesson.duration > 0 && (
+                                    <small className="fw-bold text-muted me-2">
+                                      20 Mins
+                                    </small>
+                                  )}
+                                  {lesson.is_free_preview == "yes" && (
+                                    <span className="badge bg-success">
+                                      Preview
+                                    </span>
+                                  )}
+
+                                  <Link to={`/account/courses/edit-lesson/${lesson.id}/${course.id}`} className="ms-2">
+                                    {" "}
+                                    <BsPencilSquare />{" "}
+                                  </Link>
+                                  <Link className="ms-2 text-danger">
+                                    {" "}
+                                    <FaTrashAlt />{" "}
+                                  </Link>
                                 </div>
                               </div>
                             );
                           })}
                       </div>
-                      <div className="col-md-12">
+                      <div className="col-md-12 mt-3">
                         <div className="d-flex">
                           <button
                             onClick={() => deleteChapter(chapter.id)}
