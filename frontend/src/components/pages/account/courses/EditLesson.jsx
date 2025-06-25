@@ -3,9 +3,10 @@ import Layout from "../../../common/Layout";
 import UserSidebar from "../../../common/UserSidebar";
 import { useForm } from "react-hook-form";
 import { apiUrl, token } from "../../../common/Config";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import JoditEditor from "jodit-react";
 import toast from "react-hot-toast";
+import LessonVideo from "./LessonVideo";
 
 const EditLesson = ({ placeholder }) => {
   const {
@@ -17,8 +18,8 @@ const EditLesson = ({ placeholder }) => {
 
   const params = useParams();
   const [chapters, setChapters] = useState();
-  const [lesson, setLesson] = useState();
-  const [loading, setLoading]=useState(false);
+  const [lesson, setLesson] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const editor = useRef(null);
   const [content, setContent] = useState("");
@@ -111,11 +112,13 @@ const EditLesson = ({ placeholder }) => {
               <div className="col-md-12 mt-5 mb-3">
                 <div className="d-flex justify-content-between">
                   <h2 className="h4 mb-0 pb-0">EditLesson</h2>
+                  <Link to={`/account/courses/edit/${params.courseId}`} className="btn btn-primary"> Back </Link>
                 </div>
               </div>
               <div className="col-lg-3 account-sidebar">
                 <UserSidebar />
               </div>
+
               <div className="col-lg-9">
                 <div className="row">
                   <div className="col-md-8">
@@ -247,11 +250,14 @@ const EditLesson = ({ placeholder }) => {
                             disabled={loading}
                             className="btn btn-primary mt-3"
                           >
-                            {loading ? "Please wait...": "Update"}
+                            {loading ? "Please wait..." : "Update"}
                           </button>
                         </div>
                       </div>
                     </form>
+                  </div>
+                  <div className="col-md-4">
+                    <LessonVideo lesson={lesson} />
                   </div>
                 </div>
               </div>
