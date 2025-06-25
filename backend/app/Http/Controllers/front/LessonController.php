@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\front;
 
 use App\Http\Controllers\Controller;
@@ -13,7 +14,7 @@ class LessonController extends Controller
         $validator = Validator::make($request->all(), [
             'chapter' => 'required',
             'lesson'     => 'required',
-            'status'=>'required',
+            'status' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -36,6 +37,25 @@ class LessonController extends Controller
             'message' => 'Lesson added successfully.',
         ], 200);
     }
+
+    public function show($id)
+    {
+
+        $lesson = Lesson::find($id);
+
+        if ($lesson == null) {
+            return response()->json([
+                'status' => 404,
+                'message' => 'Lesson not found.'
+            ], 404);
+        }
+
+        return response()->json([
+            'status' => 200,
+            'data' => $lesson
+        ], 200);
+    }
+
 
     public function update($id, Request $request)
     {
