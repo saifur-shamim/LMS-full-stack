@@ -305,7 +305,7 @@ const EditCourse = () => {
                           />
                         </div>
                         <button disabled={loading} className="btn btn-primary">
-                          {loading == false ? "Update" : "Please wait..."}
+                          {loading == false ? "Please wait...": "Save"}
                         </button>
                       </div>
                     </div>

@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { apiUrl, token } from "../../../common/Config";
 import { useParams } from "react-router-dom";
 import JoditEditor from "jodit-react";
+import toast from "react-hot-toast";
 
 const EditLesson = ({ placeholder }) => {
   const {
@@ -16,9 +17,12 @@ const EditLesson = ({ placeholder }) => {
 
   const params = useParams();
   const [chapters, setChapters] = useState();
+  const [lesson, setLesson] = useState();
+  const [loading, setLoading]=useState(false);
 
   const editor = useRef(null);
   const [content, setContent] = useState("");
+  const [checked, setChecked] = useState(false);
 
   const config = useMemo(
     () => ({
@@ -28,9 +32,12 @@ const EditLesson = ({ placeholder }) => {
     [placeholder]
   );
 
-  const onSubmit = async (data) => {
+  const onSubmit = (data) => {
+    data.description = content;
     setLoading(true);
-    await fetch(`${apiUrl}/courses/${params.id}`, {
+    // console.log(data);
+
+    fetch(`${apiUrl}/lessons/${params.id}`, {
       method: "PUT",
       headers: {
         "Content-type": "application/json",
@@ -45,10 +52,7 @@ const EditLesson = ({ placeholder }) => {
         if (result.status == 200) {
           toast.success(result.message);
         } else {
-          const errors = result.errors;
-          Object.keys(errors).forEach((field) => {
-            setError(field, { message: errors[field][0] });
-          });
+          console.log("something went wrong");
         }
       });
   };
@@ -66,6 +70,32 @@ const EditLesson = ({ placeholder }) => {
       .then((result) => {
         if (result.status == 200) {
           setChapters(result.data);
+        } else {
+          console.log("something went wrong");
+        }
+      });
+
+    fetch(`${apiUrl}/lessons/${params.id}`, {
+      method: "GET",
+      headers: {
+        "Content-type": "application/json",
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((res) => res.json())
+      .then((result) => {
+        if (result.status == 200) {
+          console.log(result);
+          setLesson(result.data);
+          reset({
+            lesson: result.data.title,
+            chapter_id: result.data.chapter_id,
+            status: result.data.status,
+            duration: result.data.duration,
+          });
+          setContent(result.data.description);
+          setChecked(result.data.is_free_preview == "yes" ? true : false);
         } else {
           console.log("something went wrong");
         }
@@ -100,16 +130,34 @@ const EditLesson = ({ placeholder }) => {
                               Title
                             </label>
                             <input
+                              {...register("lesson", {
+                                required: "The lesson field is required.",
+                              })}
                               type="text"
-                              className="form-control"
-                              placeholder="Title"
+                              className={`form-control ${
+                                errors.lesson && "is-invalid"
+                              }`}
+                              placeholder="Lesson"
                             />
+                            {errors.lesson && (
+                              <p className="invalid-feedback">
+                                {" "}
+                                {errors.lesson.message}
+                              </p>
+                            )}
                           </div>
                           <div className="mb-3">
                             <label htmlFor="" className="form-label">
                               Chapter
                             </label>
-                            <select className="form-select">
+                            <select
+                              {...register("chapter_id", {
+                                required: "Please select a chapter",
+                              })}
+                              className={`form-select ${
+                                errors.chapter_id && "is-invalid"
+                              }`}
+                            >
                               <option value="">Select a Chapter</option>
                               {chapters &&
                                 chapters.map((chapter) => {
@@ -120,6 +168,12 @@ const EditLesson = ({ placeholder }) => {
                                   );
                                 })}
                             </select>
+                            {errors.chapter_id && (
+                              <p className="invalid-feedback">
+                                {" "}
+                                {errors.chapter_id.message}
+                              </p>
+                            )}
                           </div>
 
                           <div className="mb-3">
@@ -127,10 +181,21 @@ const EditLesson = ({ placeholder }) => {
                               Duration(Mins)
                             </label>
                             <input
-                              type="text"
-                              className="form-control"
+                              {...register("duration", {
+                                required: "The duration field is required.",
+                              })}
+                              type="number"
+                              className={`form-control ${
+                                errors.duration && "is-invalid"
+                              }`}
                               placeholder="Duration"
                             />
+                            {errors.duration && (
+                              <p className="invalid-feedback">
+                                {" "}
+                                {errors.duration.message}
+                              </p>
+                            )}
                           </div>
 
                           <div className="mb-3">
@@ -151,27 +216,39 @@ const EditLesson = ({ placeholder }) => {
                             <label htmlFor="" className="form-label">
                               Status
                             </label>
-                            <select className="form-select">
+                            <select
+                              {...register("status", {
+                                required: "The status field is required.",
+                              })}
+                              className="form-select"
+                            >
                               <option value="1"> Active</option>
                               <option value="0"> Block</option>
                             </select>
                           </div>
-                          <div class="d-flex">
+                          <div className="d-flex">
                             <input
+                              {...register("free_preview")}
+                              checked={checked}
+                              onChange={(e) => setChecked(e.target.checked)}
                               className="form-check-input"
                               type="checkbox"
                               id="freeLesson"
-                              value="1"
                             />
                             <label
                               className="form-check-label ms-2"
-                              for="freeLesson"
+                              htmlFor="freeLesson"
                             >
                               Free Lesson
                             </label>
                           </div>
 
-                          <button className="btn btn-primary mt-4">Update</button>
+                          <button
+                            disabled={loading}
+                            className="btn btn-primary mt-3"
+                          >
+                            {loading ? "Please wait...": "Update"}
+                          </button>
                         </div>
                       </div>
                     </form>
