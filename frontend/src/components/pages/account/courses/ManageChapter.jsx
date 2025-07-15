@@ -107,6 +107,28 @@ const ManageChapter = ({ course, params }) => {
     }
   };
 
+  const deleteLesson = async (id) => {
+    if (confirm("Are you sure you want to delete?")) {
+      await fetch(`${apiUrl}/lessons/${id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-type": "application/json",
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      })
+        .then((res) => res.json())
+        .then((result) => {
+          if (result.status == 200) {
+            setChapters({type: "UPDATE_CHAPTER", payload: result.chapter})
+            toast.success(result.message);
+          } else {
+            console.log("Something went wrong");
+          }
+        });
+    }
+  };
+
   useEffect(() => {
     if (course.chapters) {
       setChapters({ type: "SET_CHAPTERS", payload: course.chapters });
@@ -149,7 +171,7 @@ const ManageChapter = ({ course, params }) => {
           <Accordion>
             {chapters.map((chapter, index) => {
               return (
-                <Accordion.Item eventKey={index}>
+                <Accordion.Item  key={chapter.id} eventKey={index}>
                   <Accordion.Header>{chapter.title}</Accordion.Header>
                   <Accordion.Body>
                     <div className="row">
@@ -165,7 +187,7 @@ const ManageChapter = ({ course, params }) => {
                         {chapter.lessons &&
                           chapter.lessons.map((lesson) => {
                             return (
-                              <div className="row">
+                              <div  key={lesson.id} className="row">
                                 <div className="col-md-7">{lesson.title}</div>
                                 <div className="col-md-5 text-end">
                                   {lesson.duration > 0 && (
@@ -179,11 +201,14 @@ const ManageChapter = ({ course, params }) => {
                                     </span>
                                   )}
 
-                                  <Link to={`/account/courses/edit-lesson/${lesson.id}/${course.id}`} className="ms-2">
+                                  <Link
+                                    to={`/account/courses/edit-lesson/${lesson.id}/${course.id}`}
+                                    className="ms-2"
+                                  >
                                     {" "}
                                     <BsPencilSquare />{" "}
                                   </Link>
-                                  <Link className="ms-2 text-danger">
+                                  <Link onClick={()=>deleteLesson(lesson.id)} className="ms-2 text-danger">
                                     {" "}
                                     <FaTrashAlt />{" "}
                                   </Link>
