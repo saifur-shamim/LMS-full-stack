@@ -162,4 +162,18 @@ class LessonController extends Controller
             'message' => 'Video uploaded successfully',
         ], 200);
     }
+
+     public function sortLessons(Request $request)
+    {
+        if (!empty($request->lessons)) {
+            foreach ($request->lessons as $key => $lesson) {
+                Lesson::where('id', $lesson['id'])->update(['sort_order'=> $key]);
+            }
+        }
+
+        return response()->json([
+            'status' => 200,
+            'message' => 'Order updated successfully.'
+        ], 200);
+    }
 }

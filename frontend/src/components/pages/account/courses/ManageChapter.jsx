@@ -8,6 +8,7 @@ import CreateLesson from "./CreateLesson";
 import { Link } from "react-router-dom";
 import { FaPlus, FaTrashAlt } from "react-icons/fa";
 import { BsPencilSquare } from "react-icons/bs";
+import LessonsSort from "./LessonsSort";
 
 const ManageChapter = ({ course, params }) => {
   const [loading, setLoading] = useState(false);
@@ -18,6 +19,7 @@ const ManageChapter = ({ course, params }) => {
     formState: { errors },
     reset,
   } = useForm();
+  const [lessonsData, setLessonsData]=useState([]);
 
   // Update Chapter Modal
   const [showChapter, setShowChapter] = useState(false);
@@ -33,6 +35,15 @@ const ManageChapter = ({ course, params }) => {
   const handleShowLessonModal = () => {
     setShowLessonModal(true);
   };
+
+  // Sort Lesson Modal
+  const [showLessonSortModal, setShowLessonSortModal] = useState(false);
+  const handleCloseLessonSortModal = () => setShowLessonSortModal(false);
+  const handleShowLessonSortModal = (lessons) => {
+    setLessonsData(lessons);
+    setShowLessonSortModal(true);
+  };
+
 
   const chapterReducer = (state, action) => {
     switch (action.type) {
@@ -178,9 +189,9 @@ const ManageChapter = ({ course, params }) => {
                       <div className="col-md-12">
                         <div className="d-flex justify-content-between mb-2 mt-4">
                           <h4 className="h5">Lessons</h4>
-                          <a className="h6" href="#" data-discover="true">
+                          <Link  onClick={()=>handleShowLessonSortModal( chapter.lessons)} className="h6"  data-discover="true">
                             <strong>Reorder Lessons</strong>
-                          </a>
+                          </Link>
                         </div>
                       </div>
                       <div className="col-md-12">
@@ -252,6 +263,12 @@ const ManageChapter = ({ course, params }) => {
         showLessonModal={showLessonModal}
         handleCloseLessonModal={handleCloseLessonModal}
         course={course}
+      />
+
+      <LessonsSort
+      showLessonSortModal = {showLessonSortModal}
+      handleCloseLessonSortModal = {handleCloseLessonSortModal}
+      lessonsData={lessonsData}
       />
     </>
   );
