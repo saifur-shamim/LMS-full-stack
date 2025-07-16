@@ -165,14 +165,19 @@ class LessonController extends Controller
 
      public function sortLessons(Request $request)
     {
+        $chapterId =''; 
+
         if (!empty($request->lessons)) {
             foreach ($request->lessons as $key => $lesson) {
+                $chapterId = $lesson['chapter_id'];
                 Lesson::where('id', $lesson['id'])->update(['sort_order'=> $key]);
             }
         }
 
+        $chapter = Chapter::where('id', $chapterId)->with('lessons')->first();
         return response()->json([
             'status' => 200,
+            'chapter'=> $chapter,
             'message' => 'Order updated successfully.'
         ], 200);
     }

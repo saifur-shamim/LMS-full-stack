@@ -9,7 +9,7 @@ import toast from "react-hot-toast";
 const LessonsSort = ({
   showLessonSortModal,
   handleCloseLessonSortModal,
-  lessonsData,
+  lessonsData,setChapters
 }) => {
 
   const [lessons, setLessons] = useState([]);
@@ -38,6 +38,7 @@ const saveOrder = async (updatedLessons) => {
     .then((res) => res.json())
     .then((result) => {
       if (result.status == 200) {
+        setChapters({type: "UPDATE_CHAPTER", payload: result.chapter});
         toast.success(result.message);
       } else {
         console.log("Something went wrong");

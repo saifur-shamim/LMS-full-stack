@@ -269,6 +269,7 @@ const ManageChapter = ({ course, params }) => {
       showLessonSortModal = {showLessonSortModal}
       handleCloseLessonSortModal = {handleCloseLessonSortModal}
       lessonsData={lessonsData}
+      setChapters={setChapters}
       />
     </>
   );
