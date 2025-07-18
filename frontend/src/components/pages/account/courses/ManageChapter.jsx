@@ -9,6 +9,8 @@ import { Link } from "react-router-dom";
 import { FaPlus, FaTrashAlt } from "react-icons/fa";
 import { BsPencilSquare } from "react-icons/bs";
 import LessonsSort from "./LessonsSort";
+import SortChapters from "./SortChapters";
+import { AiOutlineDrag } from "react-icons/ai";
 
 const ManageChapter = ({ course, params }) => {
   const [loading, setLoading] = useState(false);
@@ -19,7 +21,7 @@ const ManageChapter = ({ course, params }) => {
     formState: { errors },
     reset,
   } = useForm();
-  const [lessonsData, setLessonsData]=useState([]);
+  const [lessonsData, setLessonsData] = useState([]);
 
   // Update Chapter Modal
   const [showChapter, setShowChapter] = useState(false);
@@ -44,11 +46,17 @@ const ManageChapter = ({ course, params }) => {
     setShowLessonSortModal(true);
   };
 
+  // Sort Chapter Modal
+  const [showChapterSortModal, setShowChapterSortModal] = useState(false);
+  const handleCloseChapterSortModal = () => setShowChapterSortModal(false);
+  const handleShowChapterSortModal = (lessons) => {
+    setShowChapterSortModal(true);
+  };
 
   const chapterReducer = (state, action) => {
     switch (action.type) {
       case "SET_CHAPTERS":
-        return action.payload;
+        return Array.isArray(action.payload) ? action.payload : [];
       case "ADD_CHAPTER":
         return [...state, action.payload];
       case "UPDATE_CHAPTER":
@@ -68,7 +76,7 @@ const ManageChapter = ({ course, params }) => {
 
   const [chapters, setChapters] = useReducer(chapterReducer, []);
 
-  const onSubmit = async (id) => {
+  const onSubmit = async (data) => {
     setLoading(true);
     const formData = { ...data, course_id: params.id };
 
@@ -131,7 +139,7 @@ const ManageChapter = ({ course, params }) => {
         .then((res) => res.json())
         .then((result) => {
           if (result.status == 200) {
-            setChapters({type: "UPDATE_CHAPTER", payload: result.chapter})
+            setChapters({ type: "UPDATE_CHAPTER", payload: result.chapter });
             toast.success(result.message);
           } else {
             console.log("Something went wrong");
@@ -153,11 +161,21 @@ const ManageChapter = ({ course, params }) => {
           <div className="d-flex">
             <div className="d-flex justify-content-between w-100">
               <h4 className="h5 mb-3">Chapters</h4>
-              <Link onClick={() => handleShowLessonModal()}>
-                {" "}
-                <FaPlus />
-                <strong>Add Lesson</strong>
-              </Link>
+              <div>
+                <Link onClick={() => handleShowLessonModal()}>
+                  {" "}
+                  <FaPlus />
+                  <strong>Add Lesson</strong>
+                </Link>
+                <Link
+                  className="ms-2"
+                  onClick={() => handleShowChapterSortModal()}
+                >
+                  {" "}
+                  <AiOutlineDrag />
+                  <strong>Reorder Chapters</strong>
+                </Link>
+              </div>
             </div>
           </div>
           <form className="mb-3" onSubmit={handleSubmit(onSubmit)}>
@@ -182,14 +200,20 @@ const ManageChapter = ({ course, params }) => {
           <Accordion>
             {chapters.map((chapter, index) => {
               return (
-                <Accordion.Item  key={chapter.id} eventKey={index}>
+                <Accordion.Item key={chapter.id} eventKey={index}>
                   <Accordion.Header>{chapter.title}</Accordion.Header>
                   <Accordion.Body>
                     <div className="row">
                       <div className="col-md-12">
                         <div className="d-flex justify-content-between mb-2 mt-4">
                           <h4 className="h5">Lessons</h4>
-                          <Link  onClick={()=>handleShowLessonSortModal( chapter.lessons)} className="h6"  data-discover="true">
+                          <Link
+                            onClick={() =>
+                              handleShowLessonSortModal(chapter.lessons)
+                            }
+                            className="h6"
+                            data-discover="true"
+                          >
                             <strong>Reorder Lessons</strong>
                           </Link>
                         </div>
@@ -198,7 +222,7 @@ const ManageChapter = ({ course, params }) => {
                         {chapter.lessons &&
                           chapter.lessons.map((lesson) => {
                             return (
-                              <div  key={lesson.id} className="row">
+                              <div key={lesson.id} className="row">
                                 <div className="col-md-7">{lesson.title}</div>
                                 <div className="col-md-5 text-end">
                                   {lesson.duration > 0 && (
@@ -219,7 +243,10 @@ const ManageChapter = ({ course, params }) => {
                                     {" "}
                                     <BsPencilSquare />{" "}
                                   </Link>
-                                  <Link onClick={()=>deleteLesson(lesson.id)} className="ms-2 text-danger">
+                                  <Link
+                                    onClick={() => deleteLesson(lesson.id)}
+                                    className="ms-2 text-danger"
+                                  >
                                     {" "}
                                     <FaTrashAlt />{" "}
                                   </Link>
@@ -266,10 +293,17 @@ const ManageChapter = ({ course, params }) => {
       />
 
       <LessonsSort
-      showLessonSortModal = {showLessonSortModal}
-      handleCloseLessonSortModal = {handleCloseLessonSortModal}
-      lessonsData={lessonsData}
-      setChapters={setChapters}
+        showLessonSortModal={showLessonSortModal}
+        handleCloseLessonSortModal={handleCloseLessonSortModal}
+        lessonsData={lessonsData}
+        setChapters={setChapters}
+      />
+
+      <SortChapters
+        showChapterSortModal={showChapterSortModal}
+        handleCloseChapterSortModal={handleCloseChapterSortModal}
+        course={course}
+        setChapters={setChapters}
       />
     </>
   );

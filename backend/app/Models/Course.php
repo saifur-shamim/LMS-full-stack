@@ -18,6 +18,6 @@ class Course extends Model
     }
 
     public function chapters() {
-        return $this->hasMany(Chapter::class);
+        return $this->hasMany(Chapter::class)->orderBy('sort_order', 'ASC');
     }
 }
