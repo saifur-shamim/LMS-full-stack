@@ -20,4 +20,8 @@ class Course extends Model
     public function chapters() {
         return $this->hasMany(Chapter::class)->orderBy('sort_order', 'ASC');
     }
+    public function level()
+{
+    return $this->belongsTo(Level::class);
+}
 }

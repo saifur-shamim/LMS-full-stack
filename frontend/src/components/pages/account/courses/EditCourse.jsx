@@ -102,6 +102,29 @@ const EditCourse = () => {
       });
   };
 
+  const changeStatus = async (course) => {
+    const status = course.status == 1 ? 0 : 1;
+
+    await fetch(`${apiUrl}/change-course-status/${course.id}`, {
+      method: "POST",
+      headers: {
+        "Content-type": "application/json",
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ status: status }),
+    })
+      .then((res) => res.json())
+      .then((result) => {
+        if (result.status == 200) {
+          toast.success(result.message);
+          setCourse({ ...course, status: result.course.status });
+        } else {
+          console.log("Something went wrong");
+        }
+      });
+  };
+
   useEffect(() => {
     courseMetaData();
   }, []);
@@ -116,14 +139,35 @@ const EditCourse = () => {
                 <Link to="/account">Account</Link>
               </li>
               <li className="breadcrumb-item active" aria-current="page">
-                Create Course
+                Edit Course
               </li>
             </ol>
           </nav>
           <div className="row">
             <div className="col-md-12 mt-5 mb-3">
               <div className="d-flex justify-content-between">
-                <h2 className="h4 mb-0 pb-0">Create Course</h2>
+                <h2 className="h4 mb-0 pb-0">Edit Course</h2>
+
+                <div>
+                  {course.status == 0 && (
+                    <Link
+                      onClick={() => changeStatus(course)}
+                      className="btn btn-secondary"
+                    >
+                      Publish
+                    </Link>
+                  )}
+
+                  {course.status == 1 && (
+                    <Link
+                      onClick={() => changeStatus(course)}
+                      className="btn btn-primary"
+                    >
+                      Unpublish
+                    </Link>
+                  )}
+                  <Link to={'/account/my-courses'} className='btn btn-light ms-2'>Back</Link>
+                </div>
               </div>
             </div>
             <div className="col-lg-3 account-sidebar">
@@ -132,7 +176,6 @@ const EditCourse = () => {
             <div className="col-lg-9">
               <div className="row">
                 <div className="col-md-7">
-
                   <form onSubmit={handleSubmit(onSubmit)}>
                     <div className="card border-0 shadow-lg">
                       <div className="card-body p-4">
@@ -305,23 +348,19 @@ const EditCourse = () => {
                           />
                         </div>
                         <button disabled={loading} className="btn btn-primary">
-                          {loading == false ? "Please wait...": "Save"}
+                          {loading == false ? "Save" : "Please wait..."}
                         </button>
                       </div>
                     </div>
                   </form>
 
-                   <ManageChapter
-                   course={course}
-                   params={params}
-                   />
+                  <ManageChapter course={course} params={params} />
                 </div>
 
                 <div className="col-md-5">
                   <ManageOutcome />
                   <ManageRequirement />
                   <EditCover course={course} setCourse={setCourse} />
-                 
                 </div>
               </div>
             </div>
