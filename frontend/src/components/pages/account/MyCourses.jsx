@@ -28,6 +28,28 @@ const MyCourses = () => {
       });
   };
 
+  const deleteCourse = async (id) => {
+    if (confirm("Are you sure you want to delete?")) {
+      await fetch(`${apiUrl}/courses/${id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-type": "application/json",
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      })
+        .then((res) => res.json())
+        .then((result) => {
+          if (result.status == 200) {
+            const newCourses = courses.filter((course) => course.id != id);
+            setCourses(newCourses);
+          } else {
+            console.log("Something went wrong");
+          }
+        });
+    }
+  };
+
   useEffect(() => {
     fetchCourses();
   }, []);
@@ -41,7 +63,7 @@ const MyCourses = () => {
                 <div className="d-flex justify-content-between">
                   <h2 className="h4 mb-0 pb-0">My Courses</h2>
                   <Link
-                    to="/account/my-courses/create"
+                    to="/account/courses/create"
                     className="btn btn-primary"
                   >
                     Create
@@ -55,7 +77,13 @@ const MyCourses = () => {
                 <div className="row gy-4">
                   {courses &&
                     courses.map((course) => {
-                      return <CourseEdit key={course.id} course={course} />;
+                      return (
+                        <CourseEdit
+                          key={course.id}
+                          course={course}
+                          deleteCourse={deleteCourse}
+                        />
+                      );
                     })}
                 </div>
               </div>

@@ -9,7 +9,7 @@ const SortChapters = ({
   showChapterSortModal,
   handleCloseChapterSortModal,
   course,
-  setChapters,
+  setChapters,chapters
 }) => {
 const [chaptersData, setChaptersData] = useState([]);
 
@@ -46,10 +46,10 @@ const saveOrder = async (updatedChapters) => {
 };
 
 useEffect(() => {
-    if (course) {
-    setChaptersData(course.chapters);
+    if (chapters) {
+    setChaptersData(chapters);
     }
-}, [course]);
+}, [chapters]);
 
   return (
     <>

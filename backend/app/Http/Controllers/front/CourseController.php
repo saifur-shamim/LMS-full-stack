@@ -3,8 +3,10 @@ namespace App\Http\Controllers\front;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
+use App\Models\Chapter;
 use App\Models\Course;
 use App\Models\Language;
+use App\Models\Lesson;
 use App\Models\Level;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
@@ -191,8 +193,56 @@ class CourseController extends Controller
 
         return response()->json([
             'status'  => 200,
-            'course'=>$course,
-            'message' => $message,       
+            'course'  => $course,
+            'message' => $message,
+        ], 200);
+    }
+
+    // This method will delete course
+    public function destroy($id, Request $request)
+    {
+        $course = Course::where('id', $id)
+            ->where('user_id', $request->user()->id)
+            ->first();
+
+        if ($course == null) {
+            return response()->json([
+                'status'  => 404,
+                'message' => 'Course not found.',
+            ], 404);
+        }
+
+        
+        $chapters = Chapter::where('course_id', $course->id)->get();
+
+        if (! empty($chapters)) {
+            foreach ($chapters as $chapter) {
+                $lessons = Lesson::where('chapter_id', $chapter->id)->get();
+                if (! empty($lessons)) {
+                    foreach ($lessons as $lesson) {
+                        if ($lesson->video != "") {
+                            if (File::exists(public_path('uploads/course/videos/' . $lesson->video))) {
+                                File::delete(public_path('uploads/course/videos/' . $lesson->video));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        if ($course->image != "") {
+            if (File::exists(public_path('uploads/course/small/' . $course->image))) {
+                File::delete(public_path('uploads/course/small/' . $course->image));
+            }
+            if (File::exists(public_path('uploads/course/' . $course->image))) {
+                File::delete(public_path('uploads/course/' . $course->image));
+            }
+        }
+
+        $course->delete();
+        return response()->json([
+            'status'  => 200,
+            'message' => 'Course deleted successfully',
         ], 200);
     }
 }

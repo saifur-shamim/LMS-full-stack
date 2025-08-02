@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { apiUrl, token } from "../../../common/Config";
 import toast from "react-hot-toast";
 
-const CreateLesson = ({ showLessonModal, handleCloseLessonModal, course }) => {
+const CreateLesson = ({ showLessonModal, handleCloseLessonModal, course,chapters }) => {
   const [loading, setLoading] = useState(false);
   const {
     register,
@@ -62,7 +62,7 @@ const CreateLesson = ({ showLessonModal, handleCloseLessonModal, course }) => {
                 className={`form-select ${errors.chapter && "is-invalid"}`}
               >
                 <option value="">Select a Chapter</option>
-                {course?.chapters?.map((chapter) => {
+                {chapters && chapters.map((chapter) => {
                   return <option value={chapter.id}>{chapter.title}</option>;
                 })}
               </select>

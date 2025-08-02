@@ -1,15 +1,32 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-const CourseEdit = ({ course }) => {
+const CourseEdit = ({ course,deleteCourse }) => {
   return (
     <div className="col-md-4">
       <div className="card border-0">
-        <img
-          src="https://placehold.co/600x350?text=Web+Development"
+        {
+          course.status==1 && <span className="fw-bold badge bg-success text-white position-absolute top-0 end-0 m-2">Published</span>
+        }
+
+        {
+          course.status==0 && <span className="fw-bold badge bg-light text-muted position-absolute top-0 end-0 m-2">Draft</span>
+        }
+
+        {
+          course.course_small_image &&  <img
+          src={course.course_small_image}
           alt="Web Development Course"
           className="card-img-top img-fluid"
         />
+        }
+        {
+          course.course_small_image=='' &&  <img
+          src={`https://placehold.co/600x350?text=${course.title}`}
+          alt="Web Development Course"
+          className="card-img-top img-fluid"
+        />
+        }
         <div className="card-body">
           <div className="card-title">{course.title}</div>
           <div className="meta d-flex py-2">
@@ -77,6 +94,12 @@ const CourseEdit = ({ course }) => {
                 className="btn btn-primary"
               >
                 Edit
+              </Link>
+              <Link
+                onClick={()=>deleteCourse(course.id)}
+                className="ms-2 btn btn-danger"
+              >
+               Delete
               </Link>
             </div>
           </div>

@@ -23,6 +23,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::put('/courses/{id}', [CourseController::class, 'update']);
     Route::post('/save-course-image/{id}', [CourseController::class, 'saveCourseImage']);
     Route::post('/change-course-status/{id}', [CourseController::class, 'changeStatus']);
+    Route::delete('/courses/{id}', [CourseController::class, 'destroy']);
 
     //Outcome routes
     Route::get('/outcomes', [OutcomeController::class, 'index']);
