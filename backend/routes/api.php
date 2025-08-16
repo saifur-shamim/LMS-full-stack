@@ -3,6 +3,7 @@
 use App\Http\Controllers\front\AccountController;
 use App\Http\Controllers\front\ChapterController;
 use App\Http\Controllers\front\CourseController;
+use App\Http\Controllers\front\HomeController;
 use App\Http\Controllers\front\LessonController;
 use App\Http\Controllers\front\OutcomeController;
 use App\Http\Controllers\front\RequirementController;
@@ -11,6 +12,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('/register', [AccountController::class, 'register']);
 Route::post('/login', [AccountController::class, 'authenticate']);
+Route::get('/fetch-categories', [HomeController::class, 'fetchCategories']);
+Route::get('/fetch-featured-courses', [HomeController::class, 'fetchFeaturedCourses']);
+
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -31,6 +35,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::put('/outcomes/{id}', [OutcomeController::class, 'update']);
     Route::delete('/outcomes/{id}', [OutcomeController::class, 'destroy']);
     Route::post('/sort-outcomes', [OutcomeController::class, 'sortOutcomes']);
+    Route::get('/outcomes/test', [OutcomeController::class, 'test']);
+
 
     //Requirement routes
     Route::get('/requirements', [RequirementController::class, 'index']);
