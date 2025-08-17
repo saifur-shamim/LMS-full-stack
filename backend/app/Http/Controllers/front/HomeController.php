@@ -12,7 +12,9 @@ class HomeController extends Controller
 
     public function fetchCategories()   
     {
-        $categories = Category::orderBy("name","asc")->get();
+        $categories = Category::orderBy("name","asc")
+        ->where('status',1)
+        ->get();
 
         return response()->json([
             'status'=>200,
@@ -23,6 +25,7 @@ class HomeController extends Controller
     public function fetchFeaturedCourses()   
     {
         $courses = Course::orderBy("title","asc")
+        ->with('level')
         ->where('is_featured', 'yes')
         ->where('status',1)
         ->get();

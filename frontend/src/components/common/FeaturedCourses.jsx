@@ -1,70 +1,58 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Course from './Course'
+import { apiUrl, token } from './Config';
 
 const FeaturedCourses = () => {
-  return (
-     <section className='section-3 my-5'>    
+    const [courses, setCourses] = useState([]);
+
+    const fetchFeaturedCourses = () => {
+        fetch(`${apiUrl}/fetch-featured-courses`, {
+            method: 'GET',
+            headers: {
+                'Content-type': 'application/json',
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }
+        })
+            .then(res => res.json())
+            .then(result => {
+                if (result.status === 200) {
+                   
+                    setCourses(result.data);
+                } else {
+                    console.log("Something went wrong");
+                }
+            });
+    };
+
+    useEffect(() => {
+        fetchFeaturedCourses();
+    }, [])
+
+    return (
+        <section className='section-3 my-5'>
             <div className="container">
                 <div className='section-title py-3  mt-4'>
                     <h2 className='h3'>Featured Courses</h2>
                     <p>Discover courses designed to help you excel in your professional and personal growth.</p>
                 </div>
                 <div className="row gy-4">
-                    <Course 
-                        title='The complete 2025 Web Development Bootcamp'
-                        level='Advance'
-                        enrolled='10'
-                        customClasses="col-lg-3 col-md-6"
-                    />
-                    <Course 
-                        title='The complete 2025 Web Development Bootcamp'
-                        level='Advance'
-                        enrolled='10'
-                        customClasses="col-lg-3 col-md-6"
-                    />   
-                    <Course 
-                        title='The complete 2025 Web Development Bootcamp'
-                        level='Advance'
-                        enrolled='10'
-                        customClasses="col-lg-3 col-md-6"
-                    />   
-                    <Course 
-                        title='The complete 2025 Web Development Bootcamp'
-                        level='Advance'
-                        enrolled='10'
-                        customClasses="col-lg-3 col-md-6"
-                    />   
-                    <Course 
-                        title='The complete 2025 Web Development Bootcamp'
-                        level='Advance'
-                        enrolled='10'
-                        customClasses="col-lg-3 col-md-6"
-                    />   
-                    <Course 
-                        title='The complete 2025 Web Development Bootcamp'
-                        level='Advance'
-                        enrolled='10'
-                        customClasses="col-lg-3 col-md-6"
-                    />   
+                    {
+                        courses && courses.map(course => {
+                            return (
+                                <Course
+                                    key={course.id}
+                                    course={course}
+                                    customClasses="col-lg-3 col-md-6"
+                                />
+                            );
+                        })
+                    }
 
-                    <Course 
-                        title='The complete 2025 Web Development Bootcamp'
-                        level='Advance'
-                        enrolled='10'
-                        customClasses="col-lg-3 col-md-6"
-                    />   
-
-                    <Course 
-                        title='The complete 2025 Web Development Bootcamp'
-                        level='Advance'
-                        enrolled='10'
-                        customClasses="col-lg-3 col-md-6"
-                    />   s            
-                    
                 </div>
             </div>
         </section>
-  )
+    )
 }
 
 export default FeaturedCourses
