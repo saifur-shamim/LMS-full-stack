@@ -14,7 +14,7 @@ Route::post('/register', [AccountController::class, 'register']);
 Route::post('/login', [AccountController::class, 'authenticate']);
 Route::get('/fetch-categories', [HomeController::class, 'fetchCategories']);
 Route::get('/fetch-featured-courses', [HomeController::class, 'fetchFeaturedCourses']);
-
+Route::get('/fetch-courses', [HomeController::class, 'courses']);
 
 Route::get('/user', function (Request $request) {
     return $request->user();
