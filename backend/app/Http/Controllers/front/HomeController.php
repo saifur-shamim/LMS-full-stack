@@ -5,7 +5,10 @@ namespace App\Http\Controllers\front;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Course;
+use App\Models\Language;
+use App\Models\Level;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 
 class HomeController extends Controller
 {
@@ -17,10 +20,35 @@ class HomeController extends Controller
             ->get();
 
         return response()->json([
-            'status' => 200,
+            'status' => ResponseAlias::HTTP_OK,
             'data' => $categories,
-        ], 200);
+        ], ResponseAlias::HTTP_OK);
     }
+
+    public function fetchLevels()
+    {
+        $levels = Level::orderBy("created_at", "asc")
+            ->where('status', 1)
+            ->get();
+
+        return response()->json([
+            'status' => ResponseAlias::HTTP_OK,
+            'data' => $levels,
+        ], ResponseAlias::HTTP_OK);
+    }
+
+    public function fetchLanguages()
+    {
+        $languages = Language::orderBy("name", "asc")
+            ->where('status', 1)
+            ->get();
+
+        return response()->json([
+            'status' => ResponseAlias::HTTP_OK,
+            'data' => $languages,
+        ], ResponseAlias::HTTP_OK);
+    }
+
 
     public function fetchFeaturedCourses()
     {
@@ -38,7 +66,7 @@ class HomeController extends Controller
 
     public function courses(Request $request)
     {
-        $courses = Course::where('status', 1);
+        $courses = Course::where('status', 1)->with('level');
 
         // Filter Course by keyword
         if (!empty($request->keyword)) {

@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Route;
 Route::post('/register', [AccountController::class, 'register']);
 Route::post('/login', [AccountController::class, 'authenticate']);
 Route::get('/fetch-categories', [HomeController::class, 'fetchCategories']);
+Route::get('/fetch-levels', [HomeController::class, 'fetchLevels']);
+Route::get('/fetch-languages', [HomeController::class, 'fetchLanguages']);
 Route::get('/fetch-featured-courses', [HomeController::class, 'fetchFeaturedCourses']);
 Route::get('/fetch-courses', [HomeController::class, 'courses']);
 
