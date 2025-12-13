@@ -8,11 +8,40 @@ const Courses = () => {
     const [levels, setLevels] = useState([]);
     const [languages, setLanguages] = useState([]);
     const [courses, setCourses] = useState([]);
-    const [loading, setLoading] = useState([]);
+    // Removed unused state [loading, setLoading]
     const [categoryChecked, setCategoryChecked] = useState([]);
 
+    const handleCategory = (e) => {
+        const { checked, value } = e.target;
+
+        if (checked) {
+            setCategoryChecked(prev => [...prev, value])
+        }
+        else {
+            // NOTE: Use strict equality (===) for comparison if IDs are numbers, 
+            // but since they are from a checkbox 'value', string comparison (!=) is often used here.
+            setCategoryChecked(categoryChecked.filter(id => id != value))
+        }
+    }
+
     const fetchCourses = () => {
-        fetch(`${apiUrl}/fetch-courses`, {
+        let search = [];
+        let params = "";
+
+        // ✅ FIX: Correctly format the search array for URLSearchParams
+        if (categoryChecked.length > 0) {
+            categoryChecked.forEach(id => {
+                // Pushing key/value pair arrays to 'search'
+                search.push(['category', id]);
+            });
+        }
+
+        if (search.length > 0) {
+            // Using new URLSearchParams with the array of arrays, and calling .toString()
+            params = new URLSearchParams(search).toString();
+        }
+
+        fetch(`${apiUrl}/fetch-courses?${params}`, {
             method: 'GET',
             headers: {
                 'Content-type': 'application/json',
@@ -92,13 +121,11 @@ const Courses = () => {
         fetchLevels()
         fetchLanguages()
         fetchCourses()
-    }, [])
+    }, [categoryChecked]) // fetchCourses runs whenever categoryChecked changes
 
     return (
         <>
-
             <Layout>
-
                 <div className='container pb-5 pt-3'>
                     <nav aria-label="breadcrumb">
                         <ol className="breadcrumb">
@@ -117,9 +144,12 @@ const Courses = () => {
                                             {
                                                 categories && categories.map(category => {
                                                     return (
+                                                        // This list item already had a key={category.id} - kept it
                                                         <li key={category.id}>
                                                             <div className="form-check">
-                                                                <input className="form-check-input" type="checkbox" value={category.id}
+                                                                <input
+                                                                    onClick={(e) => (handleCategory(e))}
+                                                                    className="form-check-input" type="checkbox" value={category.id}
                                                                     id={`category-${category.id}`} />
                                                                 <label className="form-check-label" htmlFor={`category-${category.id}`}>
                                                                     {category.name}
@@ -138,7 +168,8 @@ const Courses = () => {
                                             {
                                                 levels && levels.map(level => {
                                                     return (
-                                                        <li>
+                                                        // ✅ FIX: Added missing key prop here
+                                                        <li key={level.id}>
                                                             <div className="form-check">
                                                                 <input
                                                                     className="form-check-input"
@@ -162,7 +193,8 @@ const Courses = () => {
                                             {
                                                 languages && languages.map(language => {
                                                     return (
-                                                        <li>
+                                                        // ✅ FIX: Added missing key prop here
+                                                        <li key={language.id}>
                                                             <div className="form-check">
                                                                 <input
                                                                     className="form-check-input"
@@ -187,7 +219,7 @@ const Courses = () => {
                             <section className='section-3'>
                                 <div className='d-flex justify-content-between mb-3 align-items-center'>
                                     <div className='h5 mb-0'>
-                                        {/* 10 courses found */}
+                                        {/* You can display the number of courses here: {courses.length} courses found */}
                                     </div>
                                     <div>
                                         <select name="" id="" className='form-select'>
@@ -202,6 +234,7 @@ const Courses = () => {
                                         courses && courses.map(course => {
                                             return (
                                                 <Course
+                                                    key={course.id} // This key was correctly set in your original code
                                                     course={course}
                                                     customClasses="col-lg-4 col-md-6"
                                                 />
@@ -213,7 +246,6 @@ const Courses = () => {
                         </div>
                     </div>
                 </div>
-
             </Layout>
         </>
     )
