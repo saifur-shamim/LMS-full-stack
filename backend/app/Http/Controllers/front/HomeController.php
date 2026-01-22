@@ -96,13 +96,17 @@ class HomeController extends Controller
                 $courses = $courses->whereIn('language_id', $languageArr);
             }
         }
-        if (!empty($request->sort)) {
+        // Change sortBy to sortby to match your React fetch request
+        if (!empty($request->sortby)) {
             $sortArr = ['asc', 'desc'];
-            if (in_array($request->sort, $sortArr)) {
-                $courses = $courses->orderBy('created_at', $request->sort);
+            if (in_array($request->sortby, $sortArr)) {
+                $courses = $courses->orderBy('created_at', $request->sortby);
             } else {
-                $courses = $courses->orderBy('created_at', 'DESC');
+                $courses = $courses->orderBy('created_at', 'desc');
             }
+        } else {
+            // Default sorting if no parameter is provided
+            $courses = $courses->orderBy('created_at', 'desc');
         }
 
         $courses = $courses->get();
