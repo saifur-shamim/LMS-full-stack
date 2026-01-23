@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 
 const Course = ({ course, customClasses }) => {
     return (
@@ -54,7 +55,9 @@ const Course = ({ course, customClasses }) => {
                     <div className="d-flex py-2 justify-content-between align-items-center">
                         <div className="price">$50</div>
                         <div className="add-to-cart">
-                            <a href="/detail" className="btn btn-primary" >Read More</a>
+                            <Link to={`/detail/${course.id}`} className="btn btn-primary">
+                                Read More
+                            </Link>
                         </div>
                     </div>
                 </div>
